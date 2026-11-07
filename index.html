@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#080b12" />
+  <title>그림자 각성 — 균열의 사냥꾼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+  <main class="game-shell">
+    <canvas id="game" aria-label="그림자 각성 게임 화면"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">影</div><div><div class="brand-name">SHADOW<span> / </span>AWAKEN</div><div class="brand-sub">균열의 사냥꾼</div></div></div>
+      <div class="zone-pill"><i></i><span>침식된 성역</span><b>ZONE 01</b></div>
+      <button class="sound-button" id="soundBtn" aria-label="사운드 설정"><span>♫</span></button>
+    </header>
+    <section class="player-card panel">
+      <div class="player-heading"><div class="rank-badge">E</div><div><div class="player-name">각성자 <b>그림자</b></div><div class="class-name">어둠의 검객 <span>·</span> Lv.<strong id="levelText">1</strong></div></div><div class="player-menu">•••</div></div>
+      <div class="stat-row"><span>HP</span><div class="bar hp"><i id="hpBar"></i></div><b id="hpText">100 / 100</b></div>
+      <div class="stat-row"><span>MP</span><div class="bar mp"><i id="mpBar"></i></div><b id="mpText">60 / 60</b></div>
+      <div class="xp-block"><div class="xp-label"><span>경험치</span><span id="xpText">0 / 100 XP</span></div><div class="bar xp"><i id="xpBar"></i></div></div>
+      <div class="stat-footer"><span>⚔ <b id="attackText">12</b> 공격력</span><span>◈ <b id="goldText">0</b> 골드</span></div>
+    </section>
+    <section class="quest-card panel" id="questCard">
+      <div class="quest-title"><span class="quest-icon">✦</span><div><small>일일 의뢰</small><b>균열의 그림자</b></div><button id="questToggle" aria-label="퀘스트 접기">⌃</button></div>
+      <div class="quest-body"><div class="quest-copy">성역에 나타난 그림자 몬스터를 처치하세요.</div><div class="quest-progress"><div class="mini-bar"><i id="questBar"></i></div><span id="questCount">0 / 5</span></div><div class="quest-reward">보상 <b>+120 XP</b><b>+80 G</b></div></div>
+    </section>
+    <div class="center-notice" id="notice"><span>균열이 열렸습니다</span></div>
+    <div class="boss-warning" id="bossWarning"><span>⚠</span> 균열의 수호자가 깨어납니다</div>
+    <div class="world-label"><span class="world-dot"></span><span>성역 바깥</span><b>안전 구역까지 240m</b></div>
+    <div class="combat-feed" id="combatFeed"></div>
+    <div class="bottom-ui">
+      <div class="controls-hint"><span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">D</span><span>이동</span><span class="hint-divider">·</span><span class="keycap">SPACE</span><span>회피</span></div>
+      <div class="skillbar">
+        <button class="skill normal" id="attackBtn"><span class="skill-key">LMB</span><span class="skill-symbol">⚔</span><span class="skill-name">베기</span><span class="skill-cool"></span></button>
+        <button class="skill shadow" id="skill1"><span class="skill-key">Q</span><span class="skill-symbol">◈</span><span class="skill-name">그림자 돌진</span><span class="skill-cost">20 MP</span><span class="skill-cool"></span></button>
+        <button class="skill flame" id="skill2"><span class="skill-key">E</span><span class="skill-symbol">✹</span><span class="skill-name">월광참</span><span class="skill-cost">30 MP</span><span class="skill-cool"></span></button>
+        <button class="skill ultimate" id="skill3"><span class="skill-key">R</span><span class="skill-symbol">☽</span><span class="skill-name">그림자 군주</span><span class="skill-cost">50 MP</span><span class="skill-cool"></span></button>
+      </div>
+    </div>
+    <div class="mobile-controls"><div class="joystick" id="joystick"><div class="joy-knob" id="joyKnob"></div></div><div class="mobile-actions"><button id="mobileAttack">⚔</button><button id="mobileDash">↗</button></div></div>
+    <div class="level-up" id="levelUp"><div class="level-rays"></div><div class="level-burst">✦</div><small>AWAKENED</small><strong>LEVEL UP</strong><span>새로운 힘이 깨어납니다</span><b id="newLevel">LEVEL 2</b><button id="levelClose">계속하기</button></div>
+    <div class="defeat-overlay" id="defeat"><div>☾</div><strong>기절했습니다</strong><span>잠시 후 성역에서 다시 일어납니다</span></div>
+    <div class="toast" id="toast"></div>
+    <footer class="footer"><span>SHADOW AWAKEN</span><span>그림자는 당신의 힘이다.</span><span>V 1.0.4</span></footer>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
