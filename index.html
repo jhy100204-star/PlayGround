@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#080914" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23090a16'/%3E%3Cpath d='M32 7l9 23-9 27-9-27z' fill='%239d7bff'/%3E%3Cpath d='M32 13l4 17-4 18-4-18z' fill='%23e8dcff'/%3E%3C/svg%3E" />
+  <title>그림자 칼날 : SHADOW BLADE AWAKENING</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game-canvas" aria-label="그림자 칼날 게임 화면"></canvas>
+    <div class="screen-vignette"></div>
+    <div class="screen-grain"></div>
+    <div class="cinema-bars"><i></i><i></i></div>
+
+    <div id="loading" class="loading-screen">
+      <div class="loading-sigil"><span></span></div>
+      <div class="loading-title">그림자 칼날</div>
+      <div class="loading-sub">AWAKENING THE SHADOW ARMY</div>
+      <div class="loading-track"><i id="load-fill"></i></div>
+      <div id="load-copy" class="loading-copy">균열을 여는 중...</div>
+    </div>
+
+    <div id="start-screen" class="start-screen hidden">
+      <div class="start-halo"></div>
+      <div class="start-grid"></div>
+      <div class="start-copy">
+        <div class="eyebrow"><i></i> ROBLOX ACTION RPG <span>SEASON 01</span></div>
+        <div class="title-lockup">
+          <div class="hangul-title"><span>그림자</span><b>칼날</b></div>
+          <div class="eng-title">SHADOW <em>BLADE</em></div>
+          <div class="title-rule"><i></i><b>AWAKENING</b><i></i></div>
+        </div>
+        <p class="start-blurb">균열 너머, 잊혀진 검의 계급이 깨어난다.<br/>그림자를 부리고, 호흡을 각성하고, <strong>군주</strong>가 되어라.</p>
+        <div class="start-actions">
+          <button id="start-btn" class="primary-btn" aria-label="Play"><span>균열에 들어가기</span><kbd>ENTER</kbd><b class="btn-shine"></b></button>
+          <button id="how-btn" class="ghost-btn">조작법</button>
+        </div>
+        <div class="start-features">
+          <div><b>05</b><span>균열 웨이브</span></div>
+          <div><b>∞</b><span>각성 성장</span></div>
+          <div><b>2</b><span>그림자 &amp; 호흡</span></div>
+        </div>
+        <div class="start-foot"><span class="online-dot"></span> 싱글 플레이 · 자동 저장 · 키보드 / 터치 지원</div>
+      </div>
+      <div class="start-side">
+        <div class="side-line"></div>
+        <div class="side-word">ARISE</div>
+        <div class="side-small">E-RANK<br/>HUNTER</div>
+      </div>
+    </div>
+
+    <div id="hud" class="hud hidden">
+      <div class="hud-top">
+        <div class="hunter-card">
+          <div class="level-orb"><span>LV</span><b id="level-num">01</b></div>
+          <div class="hunter-body">
+            <div class="hunter-name"><b>성진우</b><span id="rank-label">E급 헌터</span><i class="live-pip"></i></div>
+            <div class="stat-bar hp-bar"><i id="hp-fill"></i><span id="hp-text">120 / 120</span><b>HP</b></div>
+            <div class="stat-bar mp-bar"><i id="mp-fill"></i><span id="mp-text">100 / 100</span><b>MP</b></div>
+            <div class="xp-row"><span>EXP</span><div class="xp-bar"><i id="xp-fill"></i></div><b id="xp-text">0 / 100</b></div>
+          </div>
+        </div>
+        <div class="quest-card">
+          <div class="quest-kicker"><span class="quest-icon">✦</span> 메인 퀘스트 <em id="wave-label">WAVE 01</em></div>
+          <div class="quest-name" id="quest-name">첫 번째 균열 · 그림자 임프 소탕</div>
+          <div class="quest-progress"><i id="wave-progress"></i></div>
+          <div class="quest-sub" id="quest-sub"><span>남은 적</span><b id="enemy-count">4</b><span>목표</span><b>5 웨이브</b></div>
+        </div>
+        <div class="radar-card">
+          <div class="radar-label"><span>균열 레이더</span><b id="radar-dist">—</b></div>
+          <div class="radar-disc">
+            <canvas id="radar" width="220" height="220"></canvas>
+            <div class="radar-ring"></div>
+            <div class="radar-sweep"></div>
+            <div class="radar-self"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="wave-banner" class="wave-banner">
+        <div class="banner-kicker" id="banner-kicker">균열 감지</div>
+        <div class="banner-title" id="banner-title">WAVE 01</div>
+        <div class="banner-sub" id="banner-sub">그림자 임프가 깨어났다</div>
+      </div>
+
+      <div id="boss-wrap" class="boss-wrap hidden">
+        <div class="boss-head"><span id="boss-rank">균열의 지배자</span><b id="boss-name">혈귀 장군 · 이그리스</b><em id="boss-phase">PHASE I</em></div>
+        <div class="boss-track"><i id="boss-fill"></i><span></span></div>
+      </div>
+
+      <div id="combo-wrap" class="combo-wrap">
+        <div class="combo-num" id="combo-num">0</div>
+        <div class="combo-label">HIT COMBO</div>
+        <div class="combo-grade" id="combo-grade"></div>
+      </div>
+
+      <div id="toast" class="toast"></div>
+      <div id="damage-layer" class="damage-layer"></div>
+
+      <div class="hud-bottom">
+        <div class="control-hint">
+          <div><kbd>WASD</kbd><span>이동</span></div>
+          <div><kbd>LMB</kbd><span>연격</span></div>
+          <div><kbd>SPACE</kbd><span>회피</span></div>
+          <div><kbd>TAB</kbd><span>각성</span></div>
+        </div>
+        <div class="ability-dock" id="ability-dock">
+          <button class="ability basic" data-action="attack"><span class="key">LMB</span><i class="ability-glyph sword"></i><b>그림자 연격</b><em>연속 참격</em></button>
+          <button class="ability" data-action="flame"><span class="key">F</span><i class="ability-glyph flame"></i><b>불꽃 호흡</b><em id="flame-cost">20 MP</em><div class="cooldown" id="cd-flame"></div></button>
+          <button class="ability" data-action="dash"><span class="key">Q</span><i class="ability-glyph dash"></i><b>그림자 참</b><em id="dash-cost">15 MP</em><div class="cooldown" id="cd-dash"></div></button>
+          <button class="ability" data-action="arise"><span class="key">E</span><i class="ability-glyph arise"></i><b>아리즈</b><em id="arise-cost">35 MP</em><div class="cooldown" id="cd-arise"></div></button>
+          <button class="ability ultimate locked" data-action="domain"><span class="key">R</span><i class="ability-glyph domain"></i><b>군주의 영역</b><em id="domain-cost">LV.4 해금</em><div class="cooldown" id="cd-domain"></div><div class="lock-tag">LV.4</div></button>
+        </div>
+        <div class="right-hint">
+          <div class="soul-counter"><span class="soul-gem"></span><b id="soul-count">0</b><span>그림자 정수</span></div>
+          <div class="fps-note"><i></i><span id="zone-label">균열 제단</span></div>
+        </div>
+      </div>
+
+      <div id="objective" class="objective-pill"><span>◆</span><b id="objective-text">균열의 제단을 지켜라</b></div>
+    </div>
+
+    <div id="mobile-controls" class="mobile-controls hidden">
+      <div id="joystick" class="joystick"><div class="joystick-base"></div><div id="stick-knob" class="joystick-knob"></div></div>
+      <div class="mobile-actions">
+        <button data-action="attack" class="m-btn m-attack">⚔</button>
+        <button data-action="flame" class="m-btn m-skill">火</button>
+        <button data-action="dash" class="m-btn m-dash">Q</button>
+        <button data-action="arise" class="m-btn m-arise">E</button>
+        <button data-action="domain" class="m-btn m-domain">R</button>
+      </div>
+      <button id="mobile-pause" class="mobile-pause hidden">II</button>
+    </div>
+
+    <div id="howto" class="modal hidden">
+      <div class="modal-panel howto-panel">
+        <button class="modal-close" data-close="howto">×</button>
+        <div class="modal-kicker">HUNTER MANUAL / 01</div>
+        <h2>균열 생존 매뉴얼</h2>
+        <div class="howto-grid">
+          <div><kbd>W A S D</kbd><b>이동</b><span>카메라 기준으로 움직입니다.</span></div>
+          <div><kbd>마우스</kbd><b>시점</b><span>클릭 후 드래그 또는 포인터 락.</span></div>
+          <div><kbd>좌클릭 / J</kbd><b>그림자 연격</b><span>3단 콤보. 마지막 참격이 강합니다.</span></div>
+          <div><kbd>SPACE</kbd><b>그림자 회피</b><span>무적 프레임으로 공격을 흘립니다.</span></div>
+          <div><kbd>F</kbd><b>불꽃 호흡</b><span>전방 부채꼴을 태우는 호흡술.</span></div>
+          <div><kbd>Q</kbd><b>그림자 참</b><span>전방으로 베고 지나갑니다.</span></div>
+          <div><kbd>E</kbd><b>아리즈</b><span>그림자 병사를 소환합니다.</span></div>
+          <div><kbd>R</kbd><b>군주의 영역</b><span>LV.4 각성. 광범위한 참격.</span></div>
+        </div>
+        <div class="howto-tip"><span>TIP</span> 연격을 끊지 말고 이어라. 3타와 스킬이 적을 경직시킨다.</div>
+      </div>
+    </div>
+
+    <div id="levelup" class="modal hidden">
+      <div class="levelup-wrap">
+        <div class="levelup-kicker">LEVEL UP</div>
+        <h2><span id="new-level">02</span> 각성</h2>
+        <p>그림자가 새로운 힘을 제안합니다. 하나를 선택하세요.</p>
+        <div id="card-row" class="card-row"></div>
+        <div class="levelup-foot"><span>선택 즉시 적용</span><b id="sp-left">1 POINT</b></div>
+      </div>
+    </div>
+
+    <div id="pause" class="modal hidden">
+      <div class="modal-panel pause-panel">
+        <div class="modal-kicker">SYSTEM / PAUSED</div>
+        <h2>균열 정지</h2>
+        <p>그림자가 당신의 귀환을 기다리고 있습니다.</p>
+        <button id="resume-btn" class="primary-btn"><span>계속하기</span><kbd>ESC</kbd></button>
+        <button id="restart-btn" class="ghost-btn">처음부터</button>
+        <div class="pause-note">진행 상황은 현재 세션에 자동 저장됩니다.</div>
+      </div>
+    </div>
+
+    <div id="result" class="modal hidden">
+      <div class="result-panel">
+        <div id="result-kicker" class="result-kicker">RIFT CLEARED</div>
+        <h2 id="result-title">균열을 닫았다</h2>
+        <p id="result-desc">그림자 군주가 세상에 그 이름을 새겼다.</p>
+        <div class="result-stats">
+          <div><span>도달 레벨</span><b id="res-level">1</b></div>
+          <div><span>처치한 적</span><b id="res-kills">0</b></div>
+          <div><span>최고 콤보</span><b id="res-combo">0</b></div>
+          <div><span>획득 정수</span><b id="res-souls">0</b></div>
+        </div>
+        <button id="continue-btn" class="primary-btn"><span>무한 균열 계속</span><kbd>ENTER</kbd></button>
+        <button id="result-restart" class="ghost-btn">새로운 사냥</button>
+      </div>
+    </div>
+
+    <div id="rotate-notice" class="rotate-notice">가로 화면에서 더 강력한 전투를 즐길 수 있습니다.</div>
+    <div id="debug" class="debug hidden"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
